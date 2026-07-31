@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo Cáo Hướng Dẫn Sử Dụng Giao Diện Thực Tế - YouTube Marketing Studio</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-alt: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-red: #ff3366;
+      --accent-blue: #38bdf8;
+      --accent-green: #22c55e;
+      --accent-amber: #f59e0b;
+      --border-color: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      background-color: #020617;
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #ffffff;
+    }
+
+    .brand-title span {
+      color: var(--accent-red);
+    }
+
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      background-color: var(--bg-card-alt);
+      color: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 0.45rem 0.95rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn:hover {
+      background-color: #475569;
+    }
+
+    .btn-primary {
+      background-color: #2563eb;
+      border-color: #3b82f6;
+    }
+
+    .btn-primary:hover {
+      background-color: #1d4ed8;
+    }
+
+    .btn-danger {
+      background-color: var(--accent-red);
+      border-color: #e11d48;
+    }
+
+    .deck-container {
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 1.25rem auto;
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 700px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .tag-badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .tag-mandatory {
+      background-color: rgba(255, 51, 102, 0.15);
+      color: #ff4d7d;
+      border: 1px solid rgba(255, 51, 102, 0.4);
+    }
+
+    .tag-optional {
+      background-color: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .slide-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .slide-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      margin-top: 0.15rem;
+    }
+
+    .slide-body {
+      display: grid;
+      grid-template-columns: 1fr 1.45fr;
+      gap: 1.25rem;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .slide-body.full-width {
+      grid-template-columns: 1fr;
+    }
+
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .step-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .step-item {
+      background-color: var(--bg-primary);
+      border-left: 4px solid var(--border-color);
+      padding: 0.75rem 0.95rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .step-item.mandatory-step {
+      border-left-color: var(--accent-red);
+    }
+
+    .step-item.optional-step {
+      border-left-color: var(--accent-blue);
+    }
+
+    .annot-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background-color: #ff3366;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.7rem;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 0 2px #ff3366;
+      margin-left: 0.25rem;
+      margin-right: 0.25rem;
+    }
+
+    /* REAL APP SCREENSHOT WRAPPER */
+    .app-screen-wrapper {
+      background-color: #0f172a;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 440px;
+    }
+
+    .app-screen-bar {
+      background-color: #020617;
+      padding: 0.4rem 0.75rem;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .window-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .app-screen-body {
+      flex: 1;
+      display: flex;
+      background: #f8fafc;
+      color: #0f172a;
+      position: relative;
+    }
+
+    .app-sidebar-mock {
+      width: 180px;
+      background-color: #0f172a;
+      color: #94a3b8;
+      padding: 0.75rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+    }
+
+    .app-sidebar-item {
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .app-sidebar-item.active {
+      background-color: #1e293b;
+      color: #ffffff;
+      font-weight: 600;
+      border-left: 3px solid #2563eb;
+    }
+
+    .app-main-mock {
+      flex: 1;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      background-color: #f8fafc;
+      overflow-y: auto;
+    }
+
+    .pink-highlight {
+      border: 3px solid #ff3366 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 0 12px rgba(255, 51, 102, 0.5) !important;
+      position: relative !important;
+    }
+
+    .pink-badge {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      background-color: #ff3366;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 11px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+      z-index: 100;
+    }
+
+    .bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.75rem;
+      padding: 0.4rem 0;
+    }
+
+    .progress-indicator {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .progress-bar-bg {
+      height: 4px;
+      background-color: var(--bg-card-alt);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 0.35rem;
+      width: 200px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--accent-red);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    @media print {
+      .top-bar, .bottom-bar {
+        display: none !important;
+      }
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+      .slide {
+        display: flex !important;
+        page-break-after: always !important;
+        border: 1px solid #ccc !important;
+        background-color: #ffffff !important;
+        box-shadow: none !important;
+        margin-bottom: 2rem;
+        min-height: auto !important;
+        color: #000000 !important;
+      }
+      .slide-title { color: #000000 !important; }
+      .slide-subtitle { color: #555555 !important; }
+      .step-item {
+        background-color: #f8fafc !important;
+        color: #000000 !important;
+        border: 1px solid #e2e8f0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Controls -->
+  <header class="top-bar">
+    <div class="brand-title">
+      ▶ <span>YouTube Marketing Studio</span> | Slide Hướng Dẫn Kèm Ảnh Giao Diện Chuẩn
+    </div>
+    <div class="controls-group">
+      <button class="btn" onclick="prevSlide()">❮ Trước</button>
+      <button class="btn btn-primary" onclick="nextSlide()">Tiếp ❯</button>
+      <button class="btn btn-danger" onclick="window.print()">🖨️ Xuất PDF / In</button>
+    </div>
+  </header>
+
+  <!-- Main Slide Deck -->
+  <main class="deck-container">
+
+    <!-- SLIDE 1: INTRO -->
+    <div class="slide active">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">Báo Cáo Hướng Dẫn Sử Dụng Ứng Dụng</div>
+          <div class="slide-subtitle">YouTube Marketing Studio - Giao Diện Thực Tế Khoanh Vùng Đỏ Chuẩn Theo Ảnh Thực Tế</div>
+        </div>
+        <span class="tag-badge tag-mandatory">TỔNG QUAN</span>
+      </div>
+      <div class="slide-body full-width">
+        <div class="content-box" style="text-align: center; max-width: 850px; margin: 0 auto;">
+          <h2 style="font-size: 1.7rem; margin-bottom: 1rem;">Hướng Dẫn Vận Hành Trực Quan Ứng Dụng</h2>
+          <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+            Tài liệu hướng dẫn trực quan đính kèm <strong>ảnh giao diện ứng dụng thực tế với khung viền hồng khoanh vùng và số thứ tự ①, ②, ③, ④</strong> cho toàn bộ 7 tab.
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left;">
+            <div style="background: rgba(255,51,102,0.1); border: 1px solid rgba(255,51,102,0.3); padding: 1.25rem; border-radius: 8px;">
+              <strong style="color: #ff4d7d; font-size: 1.05rem;">🔴 BƯỚC BẮT BUỘC (MANDATORY)</strong>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                Tạo Account ➔ Đăng nhập Google Chrome Profile độc lập ➔ Thêm Video ➔ Chạy Start Queue.
+              </p>
+            </div>
+            <div style="background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.3); padding: 1.25rem; border-radius: 8px;">
+              <strong style="color: var(--accent-blue); font-size: 1.05rem;">🔵 TÍNH NĂNG TÙY CHỌN (OPTIONAL)</strong>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                Mẫu tên Template, Giám sát Queue real-time, Xuất báo cáo CSV/TXT, Xem lỗi Diagnostics & Minisign Updater.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: TAB DASHBOARD -->
+    <div class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">Màn Hình 1: Dashboard (Tổng Quan Hoạt Động)</div>
+          <div class="slide-subtitle">Giao diện Dashboard thực tế của ứng dụng</div>
+        </div>
+        <span class="tag-badge tag-mandatory">🔴 DASHBOARD</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-box">
+          <ul class="step-list">
+            <li class="step-item mandatory-step">
+              <strong>[1] Thẻ Chỉ Số Thống Kê Tổng Quan:</strong>
+              <div>Theo dõi số Kênh YouTube, video Queued, Running, Completed, Failed khoanh vùng <span class="annot-circle">1</span>.</div>
+            </li>
+            <li class="step-item mandatory-step">
+              <strong>[2] Nút Điều Khiển Hàng Đợi (Start Queue):</strong>
+              <div>Bật/Tắt hàng đợi upload khoanh vùng <span class="annot-circle">2</span>.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="app-screen-wrapper">
+          <div class="app-screen-bar">
+            <span class="window-dot" style="background:#ef4444;"></span>
+            <span class="window-dot" style="background:#f59e0b;"></span>
+            <span class="window-dot" style="background:#22c55e;"></span>
+            <small style="color:#94a3b8; font-size:11px;">YouTube Marketing Studio - Dashboard</small>
+          </div>
+          <div class="app-screen-body">
+            <div class="app-sidebar-mock">
+              <div style="font-weight:bold; color:white; margin-bottom:0.5rem;">▶ YouTube Studio</div>
+              <div class="app-sidebar-item active">⌂ Dashboard</div>
+              <div class="app-sidebar-item">▣ YouTube Accounts</div>
+              <div class="app-sidebar-item">＋ New Upload</div>
+              <div class="app-sidebar-item">≡ Upload Queue</div>
+              <div class="app-sidebar-item">◷ Upload History</div>
+            </div>
+            <div class="app-main-mock">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1rem; font-weight:bold;">Dashboard</h3>
+                <div class="pink-highlight" style="padding:0.25rem 0.6rem; background:#2563eb; color:white; font-weight:bold; border-radius:6px;">
+                  <span class="pink-badge">2</span> Start Queue
+                </div>
+              </div>
+              <div class="pink-highlight" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem; background:white; padding:0.6rem; border-radius:6px;">
+                <span class="pink-badge">1</span>
+                <div style="background:#f1f5f9; padding:0.5rem; border-radius:4px;">YouTube Accounts: <strong>2</strong></div>
+                <div style="background:#f1f5f9; padding:0.5rem; border-radius:4px;">Queued: <strong>1</strong></div>
+                <div style="background:#f1f5f9; padding:0.5rem; border-radius:4px;">Running: <strong>1 (68%)</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: TAB ACCOUNTS (MATCHING USER SCREENSHOT EXACTLY) -->
+    <div class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">Màn Hình 2: YouTube Accounts (Quản Lý Kênh)</div>
+          <div class="slide-subtitle">Khoanh vùng đỏ thực tế chuẩn 100% theo ảnh của bạn</div>
+        </div>
+        <span class="tag-badge tag-mandatory">🔴 BẮT BUỘC THỰC HIỆN</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-box">
+          <ul class="step-list">
+            <li class="step-item mandatory-step">
+              <strong>[1] Nút `+ Add Account`:</strong>
+              <div>Nhấn nút khoanh vùng đỏ <span class="annot-circle">1</span> ở góc trên bên phải để tạo tài khoản mới.</div>
+            </li>
+            <li class="step-item mandatory-step">
+              <strong>[2] Nút `▶ Open Login Chrome Profile`:</strong>
+              <div>Nhấn nút khoanh vùng đỏ <span class="annot-circle">2</span> để mở Chrome độc lập và đăng nhập tài khoản Google lần đầu.</div>
+            </li>
+            <li class="step-item optional-step">
+              <strong>[3] & [4] Mở Studio & Check Session:</strong>
+              <div>Nút <span class="annot-circle">3</span> mở nhanh Studio external, nút <span class="annot-circle">4</span> kiểm tra phiên đăng nhập.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="app-screen-wrapper">
+          <div class="app-screen-bar">
+            <span class="window-dot" style="background:#ef4444;"></span>
+            <span class="window-dot" style="background:#f59e0b;"></span>
+            <span class="window-dot" style="background:#22c55e;"></span>
+            <small style="color:#94a3b8; font-size:11px;">YouTube Marketing Studio - YouTube Accounts</small>
+          </div>
+          <div class="app-screen-body">
+            <div class="app-sidebar-mock">
+              <div style="font-weight:bold; color:white; margin-bottom:0.5rem;">▶ YouTube Studio</div>
+              <div class="app-sidebar-item">⌂ Dashboard</div>
+              <div class="app-sidebar-item active">▣ YouTube Accounts</div>
+              <div class="app-sidebar-item">＋ New Upload</div>
+              <div class="app-sidebar-item">≡ Upload Queue</div>
+              <div class="app-sidebar-item">◷ Upload History</div>
+            </div>
+            <div class="app-main-mock">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1rem; font-weight:bold;">YouTube Accounts</h3>
+                <div class="pink-highlight" style="padding:0.3rem 0.75rem; background:#2563eb; color:white; font-weight:bold; border-radius:6px;">
+                  <span class="pink-badge">1</span> + Add Account
+                </div>
+              </div>
+
+              <table style="width:100%; border-collapse:collapse; background:white; font-size:0.75rem; border:1px solid #cbd5e1; border-radius:6px;">
+                <thead>
+                  <tr style="background:#f1f5f9; text-align:left;">
+                    <th style="padding:0.4rem;">#</th>
+                    <th style="padding:0.4rem;">Channel</th>
+                    <th style="padding:0.4rem;">Login Status</th>
+                    <th style="padding:0.4rem;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding:0.4rem;">1</td>
+                    <td style="padding:0.4rem;"><strong>Kênh Công Nghệ & Review</strong></td>
+                    <td style="padding:0.4rem;"><span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:4px;">Logged in</span></td>
+                    <td style="padding:0.4rem;">
+                      <div style="display:flex; gap:0.2rem; align-items:center;">
+                        <span class="pink-highlight" style="padding:2px 5px;"><span class="pink-badge">3</span>⚙</span>
+                        <span class="pink-highlight" style="padding:2px 5px;"><span class="pink-badge">2</span>▶</span>
+                        <span class="pink-highlight" style="padding:2px 5px;"><span class="pink-badge">4</span>✓</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: TAB NEW UPLOAD (MATCHING USER SCREENSHOT EXACTLY) -->
+    <div class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">Màn Hình 3: New Upload (Khoanh Vùng Đỏ Chuẩn Theo Ảnh Nâng Cấp)</div>
+          <div class="slide-subtitle">Khoanh vùng khoanh đỏ Select Account, Select Videos, Metadata & Visibility</div>
+        </div>
+        <span class="tag-badge tag-mandatory">🔴 BẮT BUỘC THỰC HIỆN</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-box">
+          <ul class="step-list">
+            <li class="step-item mandatory-step">
+              <strong>[1] Select Account:</strong>
+              <div>Khung chọn kênh YouTube đích khoanh vùng đỏ <span class="annot-circle">1</span>.</div>
+            </li>
+            <li class="step-item mandatory-step">
+              <strong>[2] Select Videos:</strong>
+              <div>Nút chọn video <code>+ Add one or more videos</code> khoanh vùng đỏ <span class="annot-circle">2</span>.</div>
+            </li>
+            <li class="step-item optional-step">
+              <strong>[3] Metadata & Visibility:</strong>
+              <div>Cách đặt tiêu đề <span class="annot-circle">3</span>, Description <span class="annot-circle">4</span> và Visibility <span class="annot-circle">5</span>.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="app-screen-wrapper">
+          <div class="app-screen-bar">
+            <span class="window-dot" style="background:#ef4444;"></span>
+            <span class="window-dot" style="background:#f59e0b;"></span>
+            <span class="window-dot" style="background:#22c55e;"></span>
+            <small style="color:#94a3b8; font-size:11px;">YouTube Marketing Studio - New Upload</small>
+          </div>
+          <div class="app-screen-body">
+            <div class="app-sidebar-mock">
+              <div style="font-weight:bold; color:white; margin-bottom:0.5rem;">▶ YouTube Studio</div>
+              <div class="app-sidebar-item">⌂ Dashboard</div>
+              <div class="app-sidebar-item">▣ YouTube Accounts</div>
+              <div class="app-sidebar-item active">＋ New Upload</div>
+              <div class="app-sidebar-item">≡ Upload Queue</div>
+            </div>
+            <div class="app-main-mock">
+              <h3 style="font-size:1rem; font-weight:bold;">New Upload</h3>
+              
+              <div class="pink-highlight" style="background:white; padding:0.5rem; border-radius:6px;">
+                <span class="pink-badge">1</span>
+                <strong>1 Select Account</strong>
+                <select style="width:100%; padding:0.3rem; margin-top:0.2rem;"><option>Kênh Công Nghệ & Review</option></select>
+              </div>
+
+              <div class="pink-highlight" style="background:white; padding:0.8rem; border-radius:6px; text-align:center;">
+                <span class="pink-badge">2</span>
+                <strong>2 Select Videos</strong>
+                <div style="color:#2563eb; font-weight:bold; margin-top:0.4rem;">+ Add one or more videos</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: TAB UPLOAD QUEUE -->
+    <div class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">Màn Hình 4: Upload Queue (Quản Lý Hàng Đợi Upload)</div>
+          <div class="slide-subtitle">Khoanh vùng thực tế nút Pause/Start Queue & Tiến trình real-time</div>
+        </div>
+        <span class="tag-badge tag-optional">🔵 UPLOAD QUEUE</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-box">
+          <ul class="step-list">
+            <li class="step-item mandatory-step">
+              <strong>[1] Nút `Pause Queue / Start Queue`:</strong>
+              <div>Điều khiển bật/tắt toàn bộ hàng đợi khoanh vùng <span class="annot-circle">1</span>.</div>
+            </li>
+            <li class="step-item optional-step">
+              <strong>[2] & [3] Thử Lại & Xóa Tác Vụ Lỗi:</strong>
+              <div>Nút `Retry All Failed` <span class="annot-circle">2</span> và nút `Xóa All Failed` <span class="annot-circle">3</span>.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="app-screen-wrapper">
+          <div class="app-screen-bar">
+            <span class="window-dot" style="background:#ef4444;"></span>
+            <span class="window-dot" style="background:#f59e0b;"></span>
+            <span class="window-dot" style="background:#22c55e;"></span>
+            <small style="color:#94a3b8; font-size:11px;">YouTube Marketing Studio - Upload Queue</small>
+          </div>
+          <div class="app-screen-body">
+            <div class="app-sidebar-mock">
+              <div style="font-weight:bold; color:white; margin-bottom:0.5rem;">▶ YouTube Studio</div>
+              <div class="app-sidebar-item">⌂ Dashboard</div>
+              <div class="app-sidebar-item active">≡ Upload Queue</div>
+            </div>
+            <div class="app-main-mock">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1rem; font-weight:bold;">Upload Queue</h3>
+                <div style="display:flex; gap:0.3rem;">
+                  <span class="pink-highlight" style="padding:2px 6px; background:#eab308; color:white; font-weight:bold;"><span class="pink-badge">1</span>Pause Queue</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: TAB HISTORY & LINK REPORT -->
+    <div class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">Màn Hình 5: Upload History & Link Report (Xuất Đường Dẫn Video)</div>
+          <div class="slide-subtitle">Khoanh vùng thực tế nút Export CSV và Export TXT</div>
+        </div>
+        <span class="tag-badge tag-optional">🔵 XUẤT BÁO CÁO</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-box">
+          <ul class="step-list">
+            <li class="step-item optional-step">
+              <strong>[1] Nút `Export CSV`:</strong>
+              <div>Xuất danh sách video đã đăng thành công kèm đường dẫn URL YouTube dạng file CSV khoanh vùng <span class="annot-circle">1</span>.</div>
+            </li>
+            <li class="step-item optional-step">
+              <strong>[2] Nút `Export TXT`:</strong>
+              <div>Xuất tệp đường dẫn thuần để copy nhanh khoanh vùng <span class="annot-circle">2</span>.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="app-screen-wrapper">
+          <div class="app-screen-bar">
+            <span class="window-dot" style="background:#ef4444;"></span>
+            <span class="window-dot" style="background:#f59e0b;"></span>
+            <span class="window-dot" style="background:#22c55e;"></span>
+            <small style="color:#94a3b8; font-size:11px;">YouTube Marketing Studio - Upload History</small>
+          </div>
+          <div class="app-screen-body">
+            <div class="app-sidebar-mock">
+              <div style="font-weight:bold; color:white; margin-bottom:0.5rem;">▶ YouTube Studio</div>
+              <div class="app-sidebar-item active">◷ Upload History</div>
+            </div>
+            <div class="app-main-mock">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1rem; font-weight:bold;">Upload History & Link Report</h3>
+                <div style="display:flex; gap:0.3rem;">
+                  <span class="pink-highlight" style="padding:2px 6px; background:#2563eb; color:white; font-weight:bold;"><span class="pink-badge">1</span>Export CSV</span>
+                  <span class="pink-highlight" style="padding:2px 6px; background:#475569; color:white; font-weight:bold;"><span class="pink-badge">2</span>Export TXT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: TAB DIAGNOSTICS VIEWER -->
+    <div class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">Màn Hình 6: Diagnostics Viewer (Chẩn Đoán Lỗi)</div>
+          <div class="slide-subtitle">Xem bản chụp màn hình và HTML snapshot khi gặp sự cố</div>
+        </div>
+        <span class="tag-badge tag-optional">🔵 CHẨN ĐOÁN LỖI</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-box">
+          <ul class="step-list">
+            <li class="step-item optional-step">
+              <strong>[1] Nút `Refresh Diagnostics`:</strong>
+              <div>Cập nhật danh sách nhật ký lỗi khoanh vùng <span class="annot-circle">1</span>.</div>
+            </li>
+            <li class="step-item optional-step">
+              <strong>[2] Nút `Cleanup Expired`:</strong>
+              <div>Dọn dẹp tự động bộ nhớ đệm log lỗi khoanh vùng <span class="annot-circle">2</span>.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="app-screen-wrapper">
+          <div class="app-screen-bar">
+            <span class="window-dot" style="background:#ef4444;"></span>
+            <span class="window-dot" style="background:#f59e0b;"></span>
+            <span class="window-dot" style="background:#22c55e;"></span>
+            <small style="color:#94a3b8; font-size:11px;">YouTube Marketing Studio - Diagnostics</small>
+          </div>
+          <div class="app-screen-body">
+            <div class="app-sidebar-mock">
+              <div style="font-weight:bold; color:white; margin-bottom:0.5rem;">▶ YouTube Studio</div>
+              <div class="app-sidebar-item active">◇ Diagnostics</div>
+            </div>
+            <div class="app-main-mock">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1rem; font-weight:bold;">Diagnostics Viewer</h3>
+                <div style="display:flex; gap:0.3rem;">
+                  <span class="pink-highlight" style="padding:2px 6px; background:#475569; color:white;"><span class="pink-badge">1</span>Refresh</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: TAB SETTINGS & UPDATER -->
+    <div class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">Màn Hình 7: Settings & Auto Updater (Cài Đặt & Cập Nhật)</div>
+          <div class="slide-subtitle">Cấu hình luồng đồng thời và xác minh chữ ký số Minisign</div>
+        </div>
+        <span class="tag-badge tag-optional">🔵 CÀI ĐẶT HỆ THỐNG</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-box">
+          <ul class="step-list">
+            <li class="step-item optional-step">
+              <strong>[1] Global Concurrency Slider:</strong>
+              <div>Điều chỉnh số luồng upload đồng thời tối đa toàn ứng dụng khoanh vùng <span class="annot-circle">1</span>.</div>
+            </li>
+            <li class="step-item optional-step">
+              <strong>[2] Tự Động Cập Nhật (Minisign Verification):</strong>
+              <div>Tự động kiểm tra bản cập nhật từ GitHub Releases khoanh vùng <span class="annot-circle">2</span>.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="app-screen-wrapper">
+          <div class="app-screen-bar">
+            <span class="window-dot" style="background:#ef4444;"></span>
+            <span class="window-dot" style="background:#f59e0b;"></span>
+            <span class="window-dot" style="background:#22c55e;"></span>
+            <small style="color:#94a3b8; font-size:11px;">YouTube Marketing Studio - Settings</small>
+          </div>
+          <div class="app-screen-body">
+            <div class="app-sidebar-mock">
+              <div style="font-weight:bold; color:white; margin-bottom:0.5rem;">▶ YouTube Studio</div>
+              <div class="app-sidebar-item active">⚙ Settings</div>
+            </div>
+            <div class="app-main-mock">
+              <h3 style="font-size:1rem; font-weight:bold;">Settings</h3>
+              <div class="pink-highlight" style="background:white; padding:0.6rem; border-radius:4px;">
+                <span class="pink-badge">1</span>
+                <strong>Global Concurrency: 2 Jobs</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <footer class="bottom-bar" style="max-width: 1280px; margin: 0 auto; width: 100%; padding: 0 1rem 1.25rem 1rem;">
+    <div class="progress-indicator">
+      Slide <span id="slide-num">1</span> / <span id="slide-total">8</span>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+    <div style="font-size: 0.85rem; color: var(--text-secondary);">
+      Mẹo: Sử dụng phím mũi tên ⬅ ➡ trên bàn phím để chuyển Slide | Nút 🖨️ Xuất PDF / In để xuất báo cáo PDF
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    document.getElementById('slide-total').innerText = totalSlides;
+
+    function showSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= totalSlides) index = totalSlides - 1;
+      
+      slides.forEach((s, i) => {
+        if (i === index) s.classList.add('active');
+        else s.classList.remove('active');
+      });
+
+      currentSlide = index;
+      document.getElementById('slide-num').innerText = currentSlide + 1;
+      const percentage = ((currentSlide + 1) / totalSlides) * 100;
+      document.getElementById('progress-fill').style.width = percentage + '%';
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    showSlide(0);
+  </script>
+</body>
+</html>

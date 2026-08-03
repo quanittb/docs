@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo Cáo Slide Hướng Dẫn Cài Đặt & Sử Dụng - Video Downloader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: #151c2c;
+      --bg-card-hover: #1e293b;
+      --border-color: #2a364f;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --highlight-red: #ef4444;
+      --highlight-red-bg: rgba(239, 68, 68, 0.12);
+      --highlight-red-border: #f87171;
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Progress & Navigation Header */
+    .app-header-nav {
+      height: 60px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title svg {
+      color: #60a5fa;
+    }
+
+    .progress-bar-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981);
+      width: 16.66%;
+      transition: width 0.3s ease;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-counter {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    .nav-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Main Presentation Container */
+    .deck-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.98);
+      transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+      padding: 32px 48px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    /* Slide Header Components */
+    .slide-header {
+      margin-bottom: 24px;
+    }
+
+    .slide-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.1);
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .slide-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .slide-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+
+    /* Content Layout Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+      flex: 1;
+    }
+
+    .grid-mockup-layout {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 28px;
+      align-items: start;
+      flex: 1;
+    }
+
+    /* Cards & Panels */
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.25s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent-blue);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* UI Mockup Display Styles */
+    .mockup-window {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mockup-header-bar {
+      background: #1e293b;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot.red { background: #ef4444; }
+    .dot.yellow { background: #f59e0b; }
+    .dot.green { background: #10b981; }
+
+    .window-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .mockup-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-size: 0.85rem;
+    }
+
+    /* Red Framing Highlights (Non-Obstructive) */
+    .highlight-frame {
+      position: relative;
+      border: 2px dashed var(--highlight-red-border) !important;
+      background-color: var(--highlight-red-bg) !important;
+      border-radius: 8px;
+      padding: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .badge-number {
+      position: absolute;
+      top: -12px;
+      left: -10px;
+      background: var(--highlight-red);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.75rem;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.6);
+      z-index: 20;
+    }
+
+    /* Side Explanation Panel Cards */
+    .explanation-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .explanation-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--highlight-red);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    .explanation-card:hover {
+      transform: translateX(4px);
+      background: var(--bg-card-hover);
+    }
+
+    .exp-badge {
+      background: var(--highlight-red);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.8rem;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .exp-content h4 {
+      font-size: 0.95rem;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .exp-content p {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Code Blocks */
+    .code-block {
+      background: #090d16;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .copy-btn {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #38bdf8;
+      color: #090d16;
+    }
+
+    /* Steps List */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 18px;
+      border-radius: 10px;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: #fff;
+      font-weight: 800;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-text h4 {
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .step-text p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* External Links */
+    .link-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #60a5fa;
+      background: rgba(96, 165, 250, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .link-badge:hover {
+      background: #60a5fa;
+      color: #0f172a;
+    }
+
+    /* Alert Boxes */
+    .alert-box {
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 12px;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .alert-box.warning {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    .alert-box.info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+    }
+
+    /* Browser Bookmark Bar Mockup */
+    .browser-toolbar-mockup {
+      background: #202124;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .browser-address-bar {
+      background: #2f3033;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #3c4043;
+      color: #9aa0a6;
+      font-size: 0.8rem;
+    }
+
+    .address-input {
+      background: #202124;
+      border-radius: 14px;
+      padding: 4px 12px;
+      flex: 1;
+      color: #e8eaed;
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
+
+    .bookmark-bar {
+      background: #292a2d;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #3c4043;
+    }
+
+    .bookmark-item {
+      background: #35363a;
+      border: 1px solid #4a4d52;
+      color: #e8eaed;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .bookmark-item.highlighted {
+      border: 2px dashed #f87171;
+      background: rgba(239, 68, 68, 0.2);
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar Navigation -->
+  <header class="app-header-nav">
+    <div class="brand-title">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span>Video Downloader - Hướng Dẫn Cài Đặt & Sử Dụng</span>
+    </div>
+
+    <div class="nav-controls">
+      <span class="slide-counter" id="slide-counter">Slide 1 / 6</span>
+      <button class="nav-btn" id="prev-btn" onclick="prevSlide()" disabled>
+        ◄ Trước
+      </button>
+      <button class="nav-btn" id="next-btn" onclick="nextSlide()">
+        Tiếp ►
+      </button>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+  </header>
+
+  <!-- Presentation Deck -->
+  <main class="deck-container">
+
+    <!-- SLIDE 1: Cài Đặt -->
+    <section class="slide active" id="slide-1">
+      <div class="slide-header">
+        <span class="slide-tag">HƯỚNG DẪN CÀI ĐẶT</span>
+        <h1 class="slide-title">Cài Đặt Ứng Dụng Trên Windows & macOS</h1>
+        <p class="slide-subtitle">Các bước cài đặt nhanh chóng và cách xử lý lỗi Gatekeeper trên máy Mac</p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Windows Section -->
+        <div class="feature-card">
+          <div class="card-title" style="color: #60a5fa;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.851"/></svg>
+            1. Dành Cho Windows (.msi / .exe)
+          </div>
+          <div class="step-list" style="margin-top: 14px;">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-text">
+                <h4>Tải Bản Cài Đặt</h4>
+                <p>Truy cập mục Releases của dự án để tải file cài đặt định dạng <code>.msi</code>.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-text">
+                <h4>Chạy Cài Đặt</h4>
+                <p>Nhấp đôi vào tệp <code>.msi</code> để tiến hành cài đặt ứng dụng vào hệ thống Windows.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-text">
+                <h4>Khởi Chạy</h4>
+                <p>Mở biểu tượng shortcut <strong>Video Downloader</strong> trên Desktop để sử dụng ngay.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- macOS Section -->
+        <div class="feature-card">
+          <div class="card-title" style="color: #a78bfa;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.32c.62-.75 1.04-1.8 1-2.82-.9.04-2 .6-2.65 1.36-.58.68-1.09 1.76-.95 2.8.99.08 2.02-.51 2.6-1.34z"/></svg>
+            2. Dành Cho macOS (.dmg)
+          </div>
+          <div class="step-list" style="margin-top: 14px;">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-text">
+                <h4>Tải File DMG Đúng Chip</h4>
+                <p>• Apple Silicon (M1/M2/M3/M4): Tải <code>Video.Downloader_aarch64.dmg</code><br>• Chip Intel: Tải <code>Video.Downloader_x64.dmg</code></p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-text">
+                <h4>Cài Vào Applications</h4>
+                <p>Mở file <code>.dmg</code> và kéo biểu tượng <strong>Video Downloader</strong> vào thư mục Applications (Ứng dụng).</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- macOS Gatekeeper Alert -->
+          <div class="alert-box warning">
+            <span style="font-size: 1.2rem;">⚠️</span>
+            <div>
+              <strong>Khắc phục lỗi "Ứng dụng bị hỏng" (Damaged File) trên macOS:</strong><br>
+              Vì ứng dụng chưa đăng ký chứng chỉ Apple Developer, hãy mở <strong>Terminal</strong> (<code>Cmd + Space</code> -> <code>Terminal</code>) và dán câu lệnh sau:
+              <div class="code-block">
+                <span id="mac-cmd">sudo xattr -rd com.apple.quarantine /Applications/Video\ Downloader.app</span>
+                <button class="copy-btn" onclick="copyText('mac-cmd')">Sao chép</button>
+              </div>
+              <em>Nhập mật khẩu máy Mac (không hiển thị tự gõ rồi gõ Enter) để hoàn tất mở khóa.</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: Giao diện chính & Mockup Chú thích nút bấm -->
+    <section class="slide" id="slide-2">
+      <div class="slide-header">
+        <span class="slide-tag">GIAO DIỆN CHÍNH</span>
+        <h1 class="slide-title">Mô Phỏng Giao Diện & Chú Thích Các Nút Bấm</h1>
+        <p class="slide-subtitle">Các nút bấm được đóng khung đỏ viền nổi bật. Xem giải thích tương ứng ở cột bên phải.</p>
+      </div>
+
+      <div class="grid-mockup-layout">
+        <!-- Mockup Interface Container -->
+        <div class="mockup-window">
+          <div class="mockup-header-bar">
+            <div class="window-dots">
+              <div class="dot red"></div>
+              <div class="dot yellow"></div>
+              <div class="dot green"></div>
+            </div>
+            <div class="window-title">Video Downloader v0.1.0</div>
+            <div style="font-size: 0.75rem; color: #60a5fa;">🇻🇳 Tiếng Việt</div>
+          </div>
+
+          <div class="mockup-body">
+            <!-- 1. URL Area -->
+            <div class="highlight-frame">
+              <div class="badge-number">1</div>
+              <label style="font-size: 0.75rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 4px;">Đường dẫn Video / Playlist (URL)</label>
+              <div style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 10px; color: #60a5fa; font-family: monospace; font-size: 0.8rem;">
+                https://www.youtube.com/watch?v=dQw4w9WgXcQ
+              </div>
+            </div>
+
+            <!-- 2 & 3. Format & Folder Row -->
+            <div style="display: flex; gap: 12px;">
+              <div class="highlight-frame" style="flex: 1;">
+                <div class="badge-number">2</div>
+                <label style="font-size: 0.75rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 4px;">Định dạng</label>
+                <div style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 8px 10px; color: #fff; display: flex; justify-content: space-between;">
+                  <span>MP4 (Video)</span> <span>▼</span>
+                </div>
+              </div>
+
+              <div class="highlight-frame" style="flex: 2;">
+                <div class="badge-number">3</div>
+                <label style="font-size: 0.75rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 4px;">Thư mục lưu</label>
+                <div style="display: flex; gap: 6px;">
+                  <div style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 8px 10px; color: #94a3b8; flex: 1; font-size: 0.75rem; overflow: hidden; white-space: nowrap;">
+                    C:\Users\Downloads\Video...
+                  </div>
+                  <div style="background: #3b82f6; color: #fff; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.8rem;">Chọn</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Add Queue Button -->
+            <div class="highlight-frame">
+              <div class="badge-number">4</div>
+              <div style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; text-align: center; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem;">
+                ➕ Thêm vào danh sách chờ
+              </div>
+            </div>
+
+            <!-- 5. Tabs & Queue Header -->
+            <div class="highlight-frame">
+              <div class="badge-number">5</div>
+              <div style="display: flex; gap: 10px; border-bottom: 1px solid #334155; padding-bottom: 8px;">
+                <div style="background: #1e293b; color: #60a5fa; border: 1px solid #3b82f6; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem;">
+                  Hàng chờ tải (1)
+                </div>
+                <div style="color: #94a3b8; padding: 6px 12px; font-size: 0.8rem;">
+                  Lịch sử tải (0)
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. Queue Actions & Items -->
+            <div class="highlight-frame">
+              <div class="badge-number">6</div>
+              <div style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #f8fafc; font-size: 0.8rem;">🎬 Never Gonna Give You Up.mp4</span>
+                <span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">Sẵn sàng</span>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <div style="background: #10b981; color: #fff; padding: 10px; border-radius: 6px; text-align: center; flex: 1; font-weight: 700; font-size: 0.85rem;">
+                  ▶ Bắt đầu tải danh sách
+                </div>
+                <div style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; padding: 10px; border-radius: 6px; text-align: center; flex: 1; font-weight: 600; font-size: 0.85rem;">
+                  ⏹ Dừng tất cả
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side Explanation Panel -->
+        <div class="explanation-panel">
+          <div class="explanation-card">
+            <div class="exp-badge">1</div>
+            <div class="exp-content">
+              <h4>Ô Nhập Đường Dẫn Video (URL)</h4>
+              <p>Dán liên kết video hoặc danh sách phát (Playlist) từ Youtube, TikTok, Facebook, Douyin... Có thể dán nhiều link cách nhau bằng xuống dòng.</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">2</div>
+            <div class="exp-content">
+              <h4>Lựa Chọn Định Dạng Đổi Tệp</h4>
+              <p>• <strong>MP4</strong>: Tải video đầy đủ hình ảnh và âm thanh chất lượng tốt nhất.<br>• <strong>MP3</strong>: Tự động trích xuất file âm thanh nhạc chất lượng cao.</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">3</div>
+            <div class="exp-content">
+              <h4>Thư Mục Lưu Tệp (Native Rust Picker)</h4>
+              <p>Bấm nút <strong>"Chọn"</strong> để mở cửa sổ hệ thống và chọn nơi lưu video tải về trên máy tính mà không bị trễ/lag.</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">4</div>
+            <div class="exp-content">
+              <h4>Nút "Thêm Vào Danh Sách Chờ"</h4>
+              <p>Đưa đường dẫn vừa nhập xuống hàng chờ bên dưới để chuẩn bị tải hàng loạt.</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">5</div>
+            <div class="exp-content">
+              <h4>Thanh Tab Chuyển Đổi Danh Sách</h4>
+              <p>Chuyển đổi linh hoạt giữa <strong>"Hàng chờ tải"</strong> đang xử lý và <strong>"Lịch sử tải"</strong> lưu vết các video đã tải thành công.</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">6</div>
+            <div class="exp-content">
+              <h4>Nút Nguồn Điều Khiển Hàng Chờ</h4>
+              <p>Bấm <strong>▶ Bắt đầu tải danh sách</strong> để ứng dụng tiến hành tải các video trong hàng chờ. Bấm <strong>⏹ Dừng tất cả</strong> nếu muốn tạm dừng.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: Cài Đặt Nâng Cao -->
+    <section class="slide" id="slide-3">
+      <div class="slide-header">
+        <span class="slide-tag">BẢNG CÀI ĐẶT NÂNG CAO</span>
+        <h1 class="slide-title">Tùy Biến Đặt Tên, Chất Lượng & Đa Luồng</h1>
+        <p class="slide-subtitle">Nhấn nút ⚙️ Cài đặt nâng cao để mở bảng cấu hình chuyên sâu bên dưới</p>
+      </div>
+
+      <div class="grid-mockup-layout">
+        <!-- Mockup Settings Panel -->
+        <div class="mockup-window">
+          <div class="mockup-header-bar">
+            <div class="window-dots">
+              <div class="dot red"></div>
+              <div class="dot yellow"></div>
+              <div class="dot green"></div>
+            </div>
+            <div class="window-title">Cài Đặt Nâng Cao - Video Downloader</div>
+          </div>
+
+          <div class="mockup-body" style="gap: 12px; font-size: 0.78rem;">
+
+            <!-- 1. Filename tags -->
+            <div class="highlight-frame">
+              <div class="badge-number">1</div>
+              <label style="color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Cấu trúc tên file</label>
+              <div style="background: #1e293b; border: 1px solid #334155; padding: 6px 10px; border-radius: 4px; color: #38bdf8; font-family: monospace; margin-bottom: 6px;">
+                %(title)s [%(id)s].%(ext)s
+              </div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <span style="background: #334155; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">Tên video</span>
+                <span style="background: #334155; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">Kênh - Tên video</span>
+                <span style="background: #334155; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">Ngày - Tên video</span>
+              </div>
+            </div>
+
+            <!-- 2 & 3. Quality & Playlist -->
+            <div style="display: flex; gap: 10px;">
+              <div class="highlight-frame" style="flex: 1;">
+                <div class="badge-number">2</div>
+                <label style="color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Chất lượng video</label>
+                <div style="background: #1e293b; border: 1px solid #334155; padding: 6px; border-radius: 4px; color: #fff;">
+                  Tốt nhất (1080p, 720p...) ▼
+                </div>
+              </div>
+
+              <div class="highlight-frame" style="flex: 1;">
+                <div class="badge-number">3</div>
+                <label style="color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Playlist & Giới hạn</label>
+                <div style="background: #1e293b; border: 1px solid #334155; padding: 6px; border-radius: 4px; color: #fff;">
+                  Tải toàn bộ playlist ▼
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Embed Options -->
+            <div class="highlight-frame">
+              <div class="badge-number">4</div>
+              <label style="color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Dữ liệu nhúng & Phụ đề</label>
+              <div style="display: flex; gap: 12px; color: #e2e8f0;">
+                <span>☑ Nhúng ảnh bìa</span>
+                <span>☑ Nhúng Metadata</span>
+                <span>☑ Tải phụ đề (vi, en)</span>
+              </div>
+            </div>
+
+            <!-- 5. Network & Cookies -->
+            <div class="highlight-frame">
+              <div class="badge-number">5</div>
+              <label style="color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Mạng & Xác thực Cookies</label>
+              <div style="display: flex; gap: 10px;">
+                <div style="background: #1e293b; border: 1px solid #334155; padding: 6px; border-radius: 4px; color: #94a3b8; flex: 1;">Giới hạn tốc độ (5M, 500K)</div>
+                <div style="background: #1e293b; border: 1px solid #3b82f6; padding: 6px; border-radius: 4px; color: #60a5fa; flex: 1;">Cookie: Nhập cookies.txt...</div>
+              </div>
+            </div>
+
+            <!-- 6 & 7. Parallel Threads & Post Queue -->
+            <div style="display: flex; gap: 10px;">
+              <div class="highlight-frame" style="flex: 1;">
+                <div class="badge-number">6</div>
+                <label style="color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Chế độ & Số luồng tải</label>
+                <div style="background: #1e293b; border: 1px solid #334155; padding: 6px; border-radius: 4px; color: #10b981; font-weight: 600;">
+                  ⚡ Song song (5 luồng)
+                </div>
+              </div>
+
+              <div class="highlight-frame" style="flex: 1;">
+                <div class="badge-number">7</div>
+                <label style="color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Sau khi tải xong</label>
+                <div style="background: #1e293b; border: 1px solid #334155; padding: 6px; border-radius: 4px; color: #fff;">
+                  Tắt máy tính / Tắt app ▼
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right Side Explanation Panel -->
+        <div class="explanation-panel">
+          <div class="explanation-card">
+            <div class="exp-badge">1</div>
+            <div class="exp-content">
+              <h4>Cấu Trúc Đặt Tên File Tự Động</h4>
+              <p>Bấm vào các thẻ tag có sẵn để ứng dụng tự động đổi tên tệp tải về theo ý thích: Tên video, Kênh tải, ID video, Ngày đăng...</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">2</div>
+            <div class="exp-content">
+              <h4>Tùy Chọn Chất Lượng Video</h4>
+              <p>Cho phép giới hạn độ phân giải tải về từ <strong>Tốt nhất (Original/4K/1080p)</strong> xuống 720p, 480p, 360p để tiết kiệm dung lượng đĩa cứng.</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">3</div>
+            <div class="exp-content">
+              <h4>Tải Playlist & Khoảng Giới Hạn</h4>
+              <p>Chọn tải toàn bộ playlist và điền dải video muốn lấy (Ví dụ: Tải từ video thứ 1 đến video thứ 10) cực kỳ tiện lợi.</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">4</div>
+            <div class="exp-content">
+              <h4>Nhúng Ảnh Bìa & Phụ Đề</h4>
+              <p>Tự động chèn ảnh thumbnail và thông tin ca sĩ/tác giả vào file MP4/MP3. Tải kèm file phụ đề tiếng Việt (<code>vi</code>) hoặc tiếng Anh (<code>en</code>).</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">5</div>
+            <div class="exp-content">
+              <h4>Giới Hạn Tốc Độ & Nạp File Cookies</h4>
+              <p>Nhập giới hạn tốc độ mạng (ví dụ <code>5M</code>) và chọn mục nạp file <code>cookies.txt</code> để tải các video bị khóa/riêng tư.</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">6</div>
+            <div class="exp-content">
+              <h4>Chế Độ Tải Đa Luồng Song Song</h4>
+              <p>Tải đồng thời từ 1 đến 5+ video cùng một lúc giúp hoàn thành danh sách tải nhanh gấp nhiều lần.</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <div class="exp-badge">7</div>
+            <div class="exp-content">
+              <h4>Tự Động Tắt Máy Khi Tải Xong</h4>
+              <p>Hỗ trợ thiết lập tự động tắt máy tính (Shutdown), ngủ đông (Sleep) hoặc đóng ứng dụng sau khi toàn bộ danh sách hàng chờ được tải hoàn tất.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: Hướng dẫn Thêm Cookie -->
+    <section class="slide" id="slide-4">
+      <div class="slide-header">
+        <span class="slide-tag">HƯỚNG DẪN COOKIES</span>
+        <h1 class="slide-title">Hướng Dẫn Nạp Cookies Để Tải Video Riêng Tư</h1>
+        <p class="slide-subtitle">Sử dụng tiện ích mở rộng Chrome "Get cookies.txt locally" để vượt rào xác thực video</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <h4>Cài Đặt Tiện Ích Chrome Extension</h4>
+              <p>Truy cập cửa hàng Chrome Web Store và cài đặt tiện ích chính thức:</p>
+              <div style="margin-top: 8px;">
+                <a href="https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc" target="_blank" class="link-badge">
+                  🌐 Link tải tiện ích: Get cookies.txt locally ↗
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <h4>Xuất Tệp Cookies.txt Từ Trình Duyệt</h4>
+              <p>• Mở trình duyệt Chrome và truy cập vào trang web chứa video riêng tư (Youtube, Facebook... đã đăng nhập tài khoản của bạn).<br>• Bấm vào biểu tượng mảnh ghép tiện ích trên góc phải trình duyệt -> Chọn <strong>Get cookies.txt locally</strong> -> Bấm <strong>Export / Export All</strong> để tải file <code>cookies.txt</code> về máy tính.</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <h4>Nạp Tệp Cookies Vào Video Downloader</h4>
+              <p>• Mở ứng dụng Video Downloader -> Mở <strong>⚙️ Cài đặt nâng cao</strong>.<br>• Tại mục <strong>Cookie trình duyệt</strong>, chọn: <code>Nhập tệp cookies.txt...</code><br>• Bấm nút <strong>"Chọn"</strong> và chỉ đường dẫn đến tệp <code>cookies.txt</code> vừa xuất ở Bước 2.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- Visual Box for Cookie Guide -->
+          <div class="feature-card" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.04);">
+            <div class="card-title" style="color: #10b981;">
+              <span style="font-size: 1.3rem;">💡</span> Khi Nào Cần Sử Dụng File Cookie?
+            </div>
+            <div class="card-desc" style="color: #e2e8f0; line-height: 1.7;">
+              • Video YouTube bị <strong>giới hạn độ tuổi</strong> (Age-restricted) hoặc video ở chế độ <strong>riêng tư / thành viên hội viên</strong>.<br>
+              • Video bài giảng trong các nhóm kín Facebook / Fanpage bảo mật.<br>
+              • Video trên các nền tảng yêu cầu phải có phiên đăng nhập của tài khoản cá nhân.<br><br>
+              <strong style="color: #fbbf24;">Lưu ý an toàn:</strong> Tệp <code>cookies.txt</code> chứa mã phiên đăng nhập cá nhân của bạn. Chỉ sử dụng tệp này trên ứng dụng Video Downloader cá nhân và tuyệt đối không chia sẻ tệp này cho người khác!
+            </div>
+          </div>
+
+          <div class="mockup-window" style="margin-top: 20px;">
+            <div class="mockup-header-bar">
+              <div class="window-title">Cấu hình Cookie trên ứng dụng</div>
+            </div>
+            <div class="mockup-body" style="padding: 16px;">
+              <div class="highlight-frame">
+                <div class="badge-number">✓</div>
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px;">Mạng & Xác thực</div>
+                <div style="display: flex; gap: 8px;">
+                  <div style="background: #1e293b; border: 1px solid #3b82f6; color: #60a5fa; padding: 8px; border-radius: 6px; flex: 1; font-size: 0.8rem;">
+                    Cookie: Nhập tệp cookies.txt...
+                  </div>
+                  <div style="background: #3b82f6; color: #fff; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem;">
+                    Chọn file
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: Hướng dẫn Bookmarklet cho SocialPeta -->
+    <section class="slide" id="slide-5">
+      <div class="slide-header">
+        <span class="slide-tag">BOOKMARKLET SOCIALPETA</span>
+        <h1 class="slide-title">Hướng Dẫn Gắn Script Quét Link Video SocialPeta</h1>
+        <p class="slide-subtitle">Tạo Bookmarklet trực quan trên thanh dấu trang trình duyệt để lấy link video hàng loạt</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <h4>Bật Thanh Dấu Trang (Bookmark Bar)</h4>
+              <p>Trên trình duyệt Chrome/Edge/Firefox, nhấn tổ hợp phím <code>Ctrl + Shift + B</code> (hoặc <code>Cmd + Shift + B</code> trên Mac) để hiển thị thanh dấu trang.</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <h4>Tạo Dấu Trang Mới (Add Bookmark)</h4>
+              <p>Nhấp chuột phải vào vùng trống trên thanh dấu trang -> Chọn <strong>Thêm trang... (Add page...)</strong> hoặc <strong>Thêm dấu trang (Add bookmark...)</strong>.</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <h4>Mở Mã Script Trong Thư Mục Tải Về</h4>
+              <p>Mở file chứa mã nguồn có sẵn trong thư mục Google Drive khi bạn tải về (Ví dụ: file <code>script_multi_page.txt</code> hoặc <code>script_current_page.txt</code>) và sao chép (Copy) toàn bộ nội dung mã trong file.</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <h4>Dán Mã Vào Bookmark & Lưu Lại</h4>
+              <p>• Đặt tên Dấu trang: <code>Quét Link SocialPeta</code><br>• Tại ô <strong>URL / Địa chỉ</strong>: Dán (Paste) toàn bộ đoạn mã script đã copy ở Bước 3 -> Bấm <strong>Lưu (Save)</strong>.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- Visual Browser & Bookmark Bar Graphic Mockup -->
+          <div class="browser-toolbar-mockup">
+            <div class="browser-address-bar">
+              <span>🔒 https://</span>
+              <div class="address-input">app.socialpeta.com/ad-search/video...</div>
+              <span>⭐</span>
+            </div>
+            
+            <!-- Bookmark Bar Visual -->
+            <div class="bookmark-bar">
+              <div class="bookmark-item">⭐ YouTube</div>
+              <div class="bookmark-item">⭐ Facebook</div>
+              <!-- Highlighted Bookmarklet Item -->
+              <div class="bookmark-item highlighted">
+                <span>⚡</span>
+                <span>Quét Link SocialPeta</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Bookmark Modal Graphic Mockup -->
+          <div class="mockup-window" style="margin-top: 16px;">
+            <div class="mockup-header-bar" style="background: #1e293b;">
+              <div class="window-title" style="color: #60a5fa; font-weight: 700;">📌 Cửa sổ chỉnh sửa Dấu Trang (Edit Bookmark)</div>
+            </div>
+            <div class="mockup-body" style="gap: 10px; background: #0f172a; padding: 16px;">
+              <div>
+                <label style="font-size: 0.75rem; color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Tên Dấu Trang (Name):</label>
+                <div style="background: #1e293b; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; color: #fff; font-weight: 700; font-size: 0.85rem;">
+                  ⚡ Quét Link SocialPeta
+                </div>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Địa chỉ (URL / Location) - <em>Dán mã script từ file .txt vào đây</em>:</label>
+                <div style="background: #1e293b; border: 2px dashed #f87171; padding: 10px 12px; border-radius: 6px; color: #38bdf8; font-family: var(--font-mono); font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                  javascript:(function(){/* Mã script từ file script_multi_page.txt hoặc script_current_page.txt */})();
+                </div>
+              </div>
+              <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
+                <div style="background: #334155; color: #fff; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.8rem;">Hủy</div>
+                <div style="background: #3b82f6; color: #fff; padding: 6px 16px; border-radius: 6px; font-weight: 700; font-size: 0.8rem;">Lưu (Save)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert-box info" style="margin-top: 14px;">
+            <span style="font-size: 1.2rem;">ℹ️</span>
+            <div>
+              <strong>Cách hoạt động trên SocialPeta:</strong><br>
+              Khi mở trang SocialPeta và lọc xong video -> Nhấp vào nút <strong>"⚡ Quét Link SocialPeta"</strong> trên thanh dấu trang -> Cửa sổ tự động hiện danh sách link -> Bấm Copy và dán thẳng vào Video Downloader để tải!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: Mẹo & Xử lý lỗi -->
+    <section class="slide" id="slide-6">
+      <div class="slide-header">
+        <span class="slide-tag">TỔNG KẾT & MẸO SỬ DỤNG</span>
+        <h1 class="slide-title">Mẹo Hữu Ích & Chẩn Đoán Sự Cố</h1>
+        <p class="slide-subtitle">Các kinh nghiệm giúp trải nghiệm tải video đạt tốc độ cao và ổn định nhất</p>
+      </div>
+
+      <div class="grid-2">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="feature-card">
+            <div class="card-title" style="color: #10b981;">
+              <span style="font-size: 1.3rem;">📋</span> Nhật Ký Lỗi Tự Động (Error Log)
+            </div>
+            <div class="card-desc">
+              Khi gặp video tải thất bại, ứng dụng sẽ tự động ghi thông tin sự cố vào tệp <code>download_error.log</code> trong thư mục tải xuống.<br>
+              Bạn có thể bấm nút <strong>"Sao chép nhật ký lỗi"</strong> ngay trên giao diện để gửi cho lập trình viên xử lý nhanh chóng.
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <div class="card-title" style="color: #60a5fa;">
+              <span style="font-size: 1.3rem;">⚡</span> Cấu Hình Số Luồng Tải Tối Ưu
+            </div>
+            <div class="card-desc">
+              • Đối với kết nối mạng cáp quang thông thường: Nên đặt từ <strong>3 đến 5 luồng song song</strong>.<br>
+              • Nếu bị chặn IP hoặc giới hạn băng thông: Đặt về <strong>1 luồng (Lần lượt)</strong> và cấu hình <em>Khoảng nghỉ giữa các video</em> là 2-3 giây.
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="feature-card">
+            <div class="card-title" style="color: #f59e0b;">
+              <span style="font-size: 1.3rem;">🔄</span> Kiểm Tra Cập Nhật Ứng Dụng
+            </div>
+            <div class="card-desc">
+              Nhấp vào nút <strong>"Kiểm tra cập nhật"</strong> ở góc trên bên phải ứng dụng để nhận các bản vá tính năng mới nhất từ tác giả QuanPH hoàn toàn tự động.
+            </div>
+          </div>
+
+          <div class="feature-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1)); border-color: rgba(16, 185, 129, 0.3);">
+            <div class="card-title" style="color: #10b981;">
+              <span style="font-size: 1.3rem;">🎉</span> Hoàn Tất Hướng Dẫn!
+            </div>
+            <div class="card-desc" style="color: #e2e8f0;">
+              Bản quyền ứng dụng thuộc về <strong>QuanPH</strong>.<br>
+              Chúc bạn có những trải nghiệm tải video & âm thanh tuyệt vời cùng ứng dụng Video Downloader!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 6;
+
+    function updateSlideDisplay() {
+      // Hide all slides
+      for (let i = 1; i <= totalSlides; i++) {
+        const slide = document.getElementById(`slide-${i}`);
+        if (slide) {
+          slide.classList.remove('active');
+        }
+      }
+
+      // Show current slide
+      const activeSlide = document.getElementById(`slide-${currentSlide}`);
+      if (activeSlide) {
+        activeSlide.classList.add('active');
+      }
+
+      // Update counters & buttons
+      document.getElementById('slide-counter').innerText = `Slide ${currentSlide} / ${totalSlides}`;
+      document.getElementById('prev-btn').disabled = (currentSlide === 1);
+      document.getElementById('next-btn').disabled = (currentSlide === totalSlides);
+
+      // Update progress bar
+      const progressPercent = (currentSlide / totalSlides) * 100;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlideDisplay();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlideDisplay();
+      }
+    }
+
+    // Keyboard Shortcuts Navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      }
+    });
+
+    // Copy to Clipboard Utility
+    function copyText(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Đã sao chép câu lệnh vào bộ nhớ tạm!');
+      }).catch(err => {
+        console.error('Lỗi khi sao chép:', err);
+      });
+    }
+  </script>
+</body>
+</html>

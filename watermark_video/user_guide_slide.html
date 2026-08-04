@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hướng Dẫn Sử Dụng - Watermark Video (Ảnh Thực Tế App)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --panel-bg: rgba(15, 23, 42, 0.85);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --primary-blue: #3b82f6;
+      --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --accent-green: #10b981;
+      --accent-orange: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.15) 0%, transparent 40%);
+    }
+
+    /* Top Navigation Bar */
+    header {
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--primary-gradient);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(to right, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-progress-container {
+      flex: 1;
+      max-width: 400px;
+      margin: 0 30px;
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary-gradient);
+      width: 16.66%;
+      transition: width 0.3s ease;
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+      min-width: 90px;
+      text-align: right;
+    }
+
+    /* Side Navigation Arrows (Vertically Centered Fixed) */
+    .side-nav-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      font-size: 26px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(59, 130, 246, 0.2);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .side-nav-left {
+      left: 28px;
+    }
+
+    .side-nav-right {
+      right: 28px;
+    }
+
+    .side-nav-btn:hover:not(:disabled) {
+      background: var(--primary-gradient);
+      border-color: transparent;
+      transform: translateY(-50%) scale(1.12);
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.5);
+    }
+
+    .side-nav-btn:disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+      transform: translateY(-50%) scale(0.95);
+      box-shadow: none;
+    }
+
+    /* Main Content Deck */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 90px;
+      position: relative;
+    }
+
+    .slide-container {
+      width: 100%;
+      max-width: 1180px;
+      min-height: 640px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      padding: 36px;
+      display: none;
+      flex-direction: column;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide-container.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Slide Content Typography */
+    .slide-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      width: fit-content;
+      margin-bottom: 12px;
+    }
+
+    .slide-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .slide-subtitle {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+
+    /* Layout Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    /* Cards & Features */
+    .card {
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 22px;
+      transition: all 0.25s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 16.5px;
+      font-weight: 600;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* Step Lists */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 14px;
+      background: rgba(30, 41, 59, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 14px 18px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      color: #fff;
+      font-weight: 700;
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-content-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #f8fafc;
+      margin-bottom: 4px;
+    }
+
+    .step-content-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Annotated Real UI Diagram Section */
+    .ui-mockup-wrapper {
+      position: relative;
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+    }
+
+    .ui-mockup-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Pin Annotations on Real UI */
+    .pin {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ef4444;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.4);
+      cursor: pointer;
+      z-index: 10;
+      transition: transform 0.2s ease;
+    }
+
+    .pin:hover {
+      transform: scale(1.25);
+    }
+
+    .pin-blue { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4); }
+    .pin-green { background: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.4); }
+    .pin-purple { background: #8b5cf6; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.4); }
+    .pin-amber { background: #f59e0b; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.4); }
+
+    /* Alert Boxes */
+    .alert-box {
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-top: 14px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    .alert-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .code-block {
+      background: #020617;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 12.5px;
+      color: #38bdf8;
+      margin-top: 8px;
+      word-break: break-all;
+    }
+
+    /* Bottom Footer Indicators */
+    footer {
+      padding: 16px 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top: 1px solid var(--border-color);
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .slide-container { padding: 24px; }
+      .slide-title { font-size: 24px; }
+      main { padding: 20px; }
+      .side-nav-btn { width: 44px; height: 44px; font-size: 20px; }
+      .side-nav-left { left: 10px; }
+      .side-nav-right { right: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">W</div>
+      <div class="brand-title">Watermark Video Manual (Chụp Thực Tế App)</div>
+    </div>
+
+    <div class="slide-progress-container">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+    </div>
+
+    <div class="slide-counter" id="slideCounter">Trang 1 / 6</div>
+  </header>
+
+  <!-- Side Navigation Buttons (Vertically Centered) -->
+  <button class="side-nav-btn side-nav-left" id="prevBtn" onclick="changeSlide(-1)" title="Trang trước (Phím Mũi Tên Trái)">
+    ❮
+  </button>
+  <button class="side-nav-btn side-nav-right" id="nextBtn" onclick="changeSlide(1)" title="Trang sau (Phím Mũi Tên Phải)">
+    ❯
+  </button>
+
+  <!-- Main Slide Deck -->
+  <main>
+
+    <!-- SLIDE 1: OVERVIEW -->
+    <div class="slide-container active" id="slide1">
+      <div class="slide-tag">🚀 Giới thiệu chung</div>
+      <h1 class="slide-title">Công Cụ Đóng Dấu &amp; Cắt Khung Video Hàng Loạt</h1>
+      <p class="slide-subtitle">Giải pháp chuyên nghiệp giúp bạn chèn logo bản quyền, chuẩn hóa tỷ lệ khung hình đăng TikTok, Reels, Shorts và tối ưu dung lượng video cực kỳ nhanh chóng.</p>
+
+      <div class="grid-3" style="margin-top: 10px;">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Xử lý Hàng loạt Siêu Tốc</div>
+          <div class="card-desc">Chèn logo đóng dấu đồng thời cho hàng chục file video chỉ với 1 cú click. Hoạt động 100% trên máy cục bộ, không cần tải video lên mạng.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📐</div>
+          <div class="card-title">Chuẩn Hóa Tỷ Lệ Khung Hình</div>
+          <div class="card-desc">Chuyển đổi linh hoạt sang tỷ lệ 9:16 (TikTok/Reels), 16:9 (YouTube), 1:1 (Facebook) với tính năng tự động tạo viền mờ nghệ thuật.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">Nén Dung Lượng &amp; Âm Thanh</div>
+          <div class="card-desc">Tùy chọn mức nén chất lượng cao hoặc tối ưu dung lượng nhỏ gọn, hỗ trợ lồng video nền và trộn nhạc nền (BGM) thông minh.</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 28px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 14px; padding: 18px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="font-size: 14px; color: #cbd5e1;">
+          💡 <strong>Không cần kiến thức kỹ thuật:</strong> Bấm nút ❯ chính giữa bên phải màn hình hoặc dùng phím mũi tên bàn phím để xem trang tiếp theo.
+        </div>
+        <button style="background: var(--primary-gradient); border: none; padding: 10px 22px; border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer;" onclick="goToSlide(2)">Khám phá cài đặt ❯</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: INSTALLATION -->
+    <div class="slide-container" id="slide2">
+      <div class="slide-tag">📥 Cài đặt ứng dụng</div>
+      <h1 class="slide-title">Hướng Dẫn Cài Đặt Trên Windows &amp; macOS</h1>
+      <p class="slide-subtitle">Tải bản cài đặt mới nhất từ trang phát hành chính thức và thực hiện theo hướng dẫn đơn giản bên dưới.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" style="color: #60a5fa; display: flex; align-items: center; gap: 8px;">
+            🪟 Dành cho hệ điều hành Windows
+          </div>
+          <div class="step-list" style="margin-top: 16px;">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div>
+                <div class="step-content-title">Tải file cài đặt</div>
+                <div class="step-content-desc">Tải tệp <code>.exe</code> hoặc <code>.msi</code> từ trang Releases chính thức.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div>
+                <div class="step-content-title">Chạy trình cài đặt</div>
+                <div class="step-content-desc">Nhấp đôi vào file vừa tải về và bấm Next để hoàn tất cài đặt tự động.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div>
+                <div class="step-content-title">Mở ứng dụng</div>
+                <div class="step-content-desc">Khởi chạy biểu tượng <strong>Watermark Video</strong> ngoài màn hình Desktop.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #c084fc; display: flex; align-items: center; gap: 8px;">
+            🍎 Dành cho máy Mac (macOS)
+          </div>
+          <div class="step-list" style="margin-top: 16px;">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div>
+                <div class="step-content-title">Tải file .dmg</div>
+                <div class="step-content-desc">Tải bản cài đặt <code>.dmg</code> tương thích với máy Mac của bạn.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div>
+                <div class="step-content-title">Kéo vào Applications</div>
+                <div class="step-content-desc">Mở file <code>.dmg</code> và kéo biểu tượng app vào thư mục Applications.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert-box alert-warning">
+            <div class="alert-icon">⚠️</div>
+            <div>
+              <strong>Khắc phục lỗi "Ứng dụng bị hỏng / Damaged File" trên Mac:</strong>
+              <div style="font-size: 12.5px; margin-top: 4px; color: #fde68a;">Mở <strong>Terminal</strong> (Command + Space &rarr; gõ Terminal), dán câu lệnh sau rồi nhấn Enter:</div>
+              <div class="code-block">sudo xattr -rd com.apple.quarantine /Applications/Watermark\ Video.app</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: REAL APP UI MAP -->
+    <div class="slide-container" id="slide3">
+      <div class="slide-tag">📸 Ảnh chụp màn hình ứng dụng thực tế</div>
+      <h1 class="slide-title">Sơ Đồ Nút Bấm Giao Diện Chính (Real App UI)</h1>
+      <p class="slide-subtitle">Ảnh chụp màn hình thực tế từ giao diện ứng dụng Watermark Video với các thẻ chú thích từng khu vực điều khiển.</p>
+
+      <div class="grid-2" style="align-items: center;">
+        <div class="ui-mockup-wrapper">
+          <img src="./app_real_batch_ui.png" alt="Ảnh chụp thực tế Giao diện App Watermark Video" class="ui-mockup-img">
+          
+          <!-- Pins overlaid on real UI -->
+          <div class="pin pin-blue" style="top: 12%; left: 8%;" title="1. Đổi chế độ xử lý">1</div>
+          <div class="pin pin-green" style="top: 18%; left: 8%;" title="2. Chọn file video đầu vào">2</div>
+          <div class="pin pin-purple" style="top: 32%; left: 8%;" title="3. Chọn thư mục xuất">3</div>
+          <div class="pin pin-amber" style="top: 48%; left: 8%;" title="4. Chọn tỷ lệ khung hình">4</div>
+          <div class="pin pin-blue" style="top: 66%; left: 8%;" title="5. Chọn mức nén &amp; Độ phân giải">5</div>
+          <div class="pin pin-green" style="top: 86%; left: 16%;" title="6. Bắt đầu xử lý hàng loạt">6</div>
+          <div class="pin" style="top: 45%; left: 62%;" title="7. Khung xem trước Preview">7</div>
+        </div>
+
+        <div class="step-list">
+          <div class="step-item" style="padding: 10px 14px;">
+            <div class="step-num" style="background: #3b82f6;">1</div>
+            <div>
+              <div class="step-content-title">Đóng Dấu vs Lồng Video Nền</div>
+              <div class="step-content-desc">Nút bấm chuyển đổi nhanh 2 chế độ xử lý chuyên biệt.</div>
+            </div>
+          </div>
+
+          <div class="step-item" style="padding: 10px 14px;">
+            <div class="step-num" style="background: #10b981;">2</div>
+            <div>
+              <div class="step-content-title">Chọn File Video Đầu Vào</div>
+              <div class="step-content-desc">Chọn hàng loạt video cần đóng dấu logo cùng lúc.</div>
+            </div>
+          </div>
+
+          <div class="step-item" style="padding: 10px 14px;">
+            <div class="step-num" style="background: #8b5cf6;">3</div>
+            <div>
+              <div class="step-content-title">Thư Mục Lưu Đầu Ra</div>
+              <div class="step-content-desc">Tùy chọn thư mục lưu riêng hoặc để mặc định lưu cạnh video gốc.</div>
+            </div>
+          </div>
+
+          <div class="step-item" style="padding: 10px 14px;">
+            <div class="step-num" style="background: #f59e0b;">4</div>
+            <div>
+              <div class="step-content-title">Tỷ Lệ Khung Hình Đầu Ra</div>
+              <div class="step-content-desc">Cắt tỷ lệ 9:16 (TikTok), 16:9 (YouTube), 1:1 hoặc tự nhập.</div>
+            </div>
+          </div>
+
+          <div class="step-item" style="padding: 10px 14px;">
+            <div class="step-num" style="background: #3b82f6;">5</div>
+            <div>
+              <div class="step-content-title">Nén &amp; Độ Phân Giải Tối Đa</div>
+              <div class="step-content-desc">Chọn nén Cân bằng/Nén nhiều, giới hạn 1080p, 720p, 480p.</div>
+            </div>
+          </div>
+
+          <div class="step-item" style="padding: 10px 14px;">
+            <div class="step-num" style="background: #ef4444;">6</div>
+            <div>
+              <div class="step-content-title">Khung Kéo Thả Preview (Phải)</div>
+              <div class="step-content-desc">Kéo trực tiếp logo bằng chuột trên màn hình thực tế.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: WORKFLOW 1 -->
+    <div class="slide-container" id="slide4">
+      <div class="slide-tag">🎬 Quy trình 1</div>
+      <h1 class="slide-title">Hướng Dẫn Đóng Dấu &amp; Cắt Tỉ Lệ Hàng Loạt</h1>
+      <p class="slide-subtitle">Các bước đơn giản để chèn logo và cắt viền mờ cho danh sách video chỉ trong 1 phút.</p>
+
+      <div class="grid-2">
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div>
+              <div class="step-content-title">Bước 1: Chọn các file video cần đóng dấu</div>
+              <div class="step-content-desc">Bấm nút <strong>"Chọn file video"</strong> ở bảng bên trái để tải lên danh sách các video cần xử lý.</div>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div>
+              <div class="step-content-title">Bước 2: Thêm Logo / Watermark</div>
+              <div class="step-content-desc">Bấm <strong>"+ Thêm logo"</strong> để chọn ảnh logo (PNG, JPG, SVG...). Logo sẽ ngay lập tức xuất hiện trên màn hình Preview.</div>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div>
+              <div class="step-content-title">Bước 3: Điều chỉnh vị trí logo bằng chuột</div>
+              <div class="step-content-desc">Dùng chuột <strong>kéo logo</strong> đến vị trí mong muốn (góc trên, góc dưới...) và kéo góc khung để phóng to/thu nhỏ logo.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div>
+              <div class="step-content-title">Bước 4: Chọn tỷ lệ khung hình đầu ra</div>
+              <div class="step-content-desc">Chọn <strong>Mặc định</strong> &rarr; bấm <strong>9:16</strong> (nếu đăng TikTok/Reels) hoặc <strong>16:9</strong> (nếu đăng YouTube). Ứng dụng sẽ tự động tạo viền mờ 2 bên nếu lệch tỉ lệ.</div>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">5</div>
+            <div>
+              <div class="step-content-title">Bước 5: Chọn mức nén &amp; Thư mục lưu</div>
+              <div class="step-content-desc">Chọn mức <strong>"Cân bằng"</strong> (khuyên dùng) và chọn thư mục cần lưu video đầu ra.</div>
+            </div>
+          </div>
+
+          <div class="step-item" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.08);">
+            <div class="step-num" style="background: #10b981;">6</div>
+            <div>
+              <div class="step-content-title" style="color: #34d399;">Bước 6: Bắt đầu xử lý hàng loạt</div>
+              <div class="step-content-desc" style="color: #cbd5e1;">Bấm nút xanh <strong>"Bắt đầu xử lý hàng loạt"</strong> và theo dõi tiến trình hoàn thành theo thời gian thực!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: WORKFLOW 2 - BG MODE REAL SCREENSHOT -->
+    <div class="slide-container" id="slide5">
+      <div class="slide-tag">🎨 Quy trình 2 (Ảnh Thực Tế Chế Độ Lồng Video)</div>
+      <h1 class="slide-title">Lồng Video Nền &amp; Trộn Nhạc BGM Tự Động</h1>
+      <p class="slide-subtitle">Chuyển sang chế độ "Lồng Video nền" để ghép video chính lên background video cố định.</p>
+
+      <div class="grid-2" style="align-items: center;">
+        <div class="ui-mockup-wrapper">
+          <img src="./app_real_bg_mode.png" alt="Ảnh thực tế chế độ Lồng Video Nền" class="ui-mockup-img">
+          
+          <div class="pin pin-blue" style="top: 15%; left: 10%;" title="1. Chọn Video Nền">1</div>
+          <div class="pin pin-purple" style="top: 25%; left: 10%;" title="2. Tỉ lệ khung video chính">2</div>
+          <div class="pin pin-green" style="top: 45%; left: 62%;" title="3. Khung chỉnh vị trí video chính">3</div>
+        </div>
+
+        <div class="step-list">
+          <div class="card" style="background: rgba(15, 23, 42, 0.6);">
+            <div class="card-title" style="color: #60a5fa;">🖼️ Thao tác Lồng Video Nền</div>
+            <ol style="color: #94a3b8; font-size: 13px; line-height: 1.8; padding-left: 18px; margin-top: 8px;">
+              <li>Bấm nút <strong>"Lồng Video nền"</strong> ở góc trên bên trái.</li>
+              <li>Chọn 1 file <strong>Video Nền</strong> chuẩn.</li>
+              <li>Chọn danh sách các <strong>Video chính hàng loạt</strong> cần lồng đè.</li>
+              <li>Dùng chuột co kéo khung đường nét đứt trên màn hình Preview để thay đổi vị trí &amp; kích thước video chính.</li>
+            </ol>
+          </div>
+
+          <div class="card" style="background: rgba(15, 23, 42, 0.6);">
+            <div class="card-title" style="color: #f59e0b;">🎵 Cấu Hình Âm Thanh &amp; Nhạc BGM</div>
+            <ol style="color: #94a3b8; font-size: 13px; line-height: 1.8; padding-left: 18px; margin-top: 8px;">
+              <li>Tích chọn <strong>Cấu hình âm thanh nâng cao</strong>.</li>
+              <li>Chọn file nhạc nền MP3/WAV.</li>
+              <li>Chỉnh thanh trượt Âm lượng nhạc nền &amp; Âm lượng video gốc.</li>
+              <li>Cài đặt số giây <strong>Fade-in</strong> (tăng dần âm thanh).</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: TIPS & FAQ -->
+    <div class="slide-container" id="slide6">
+      <div class="slide-tag">💡 Mẹo &amp; Câu hỏi thường gặp</div>
+      <h1 class="slide-title">Mẹo Tối Ưu &amp; Giải Đáp Thắc Mắc (FAQ)</h1>
+      <p class="slide-subtitle">Các mẹo nhỏ giúp bạn tạo ra những video chất lượng nhất và xử lý các vấn đề thường gặp.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" style="color: #10b981; margin-bottom: 12px;">🌟 Mẹo chọn tỷ lệ xuất video tối ưu</div>
+          <ul style="color: #94a3b8; font-size: 13.5px; line-height: 1.8; padding-left: 20px;">
+            <li><strong>Đăng TikTok / Reels / Shorts:</strong> Chọn tỷ lệ <code>9:16</code>. Ứng dụng sẽ tự tạo viền mờ vừa vặn khung dọc của điện thoại.</li>
+            <li><strong>Đăng YouTube chuẩn:</strong> Chọn tỷ lệ <code>16:9</code>.</li>
+            <li><strong>Đăng Facebook / Instagram Feed:</strong> Chọn tỷ lệ <code>1:1</code> (Vuông) hoặc <code>4:3</code>.</li>
+            <li><strong>Tiết kiệm dung lượng:</strong> Chọn mức nén <strong>"Nén nhiều"</strong> và giới hạn độ phân giải <code>720p</code> nếu cần gửi qua Zalo/Email.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #3b82f6; margin-bottom: 12px;">❓ Câu hỏi thường gặp (FAQ)</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px; color: #94a3b8;">
+            <div>
+              <strong style="color: #f8fafc;">Q: Video xuất ra được lưu ở đâu?</strong>
+              <div style="margin-top: 2px;">A: Mặc định ứng dụng tự tạo thư mục <code>result_videos</code> nằm ngay bên trong thư mục chứa video gốc của bạn, hoặc lưu tại thư mục bạn đã tự chọn.</div>
+            </div>
+            <div>
+              <strong style="color: #f8fafc;">Q: Làm sao để cập nhật phiên bản mới nhất?</strong>
+              <div style="margin-top: 2px;">A: Nhấp vào biểu tượng vòng xoay 🔄 ở góc trên bên phải ứng dụng. Ứng dụng sẽ tự động tải về và nâng cấp bản mới nhất cho bạn.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 28px; text-align: center; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px;">
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 20px; color: #fff; margin-bottom: 6px;">Chúc Bạn Tạo Ra Những Video Tuyệt Vời! 🎉</h3>
+        <p style="font-size: 13.5px; color: #94a3b8;">Ứng dụng Watermark Video &ndash; Bản quyền thuộc về QuanPH</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation Dots -->
+  <footer>
+    <div style="display: flex; gap: 8px;" id="slideDots">
+      <!-- Dots injected dynamically -->
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 6;
+
+    function updateSlideUI() {
+      // Toggle slide visibility
+      for (let i = 1; i <= totalSlides; i++) {
+        const slide = document.getElementById(`slide${i}`);
+        if (slide) {
+          if (i === currentSlide) {
+            slide.classList.add('active');
+          } else {
+            slide.classList.remove('active');
+          }
+        }
+      }
+
+      // Update counter and progress bar
+      document.getElementById('slideCounter').innerText = `Trang ${currentSlide} / ${totalSlides}`;
+      const progressPercent = (currentSlide / totalSlides) * 100;
+      document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+      // Update side navigation buttons state
+      document.getElementById('prevBtn').disabled = (currentSlide === 1);
+      document.getElementById('nextBtn').disabled = (currentSlide === totalSlides);
+
+      // Update dots
+      const dotsContainer = document.getElementById('slideDots');
+      dotsContainer.innerHTML = '';
+      for (let i = 1; i <= totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.style.width = i === currentSlide ? '24px' : '8px';
+        dot.style.height = '8px';
+        dot.style.borderRadius = '4px';
+        dot.style.background = i === currentSlide ? 'var(--primary-blue)' : 'rgba(255,255,255,0.2)';
+        dot.style.cursor = 'pointer';
+        dot.style.transition = 'all 0.3s ease';
+        dot.onclick = () => goToSlide(i);
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function changeSlide(direction) {
+      currentSlide += direction;
+      if (currentSlide < 1) currentSlide = 1;
+      if (currentSlide > totalSlides) currentSlide = totalSlides;
+      updateSlideUI();
+    }
+
+    function goToSlide(slideNumber) {
+      currentSlide = slideNumber;
+      updateSlideUI();
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        changeSlide(1);
+      } else if (e.key === 'ArrowLeft') {
+        changeSlide(-1);
+      }
+    });
+
+    // Initialize
+    updateSlideUI();
+  </script>
+</body>
+</html>
